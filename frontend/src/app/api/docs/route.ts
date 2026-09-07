@@ -77,7 +77,6 @@ export async function GET(req: NextRequest) {
 
   // Check public/docs first (bundled on Vercel), then local IP-SAKTI-DATA folder
   const publicPath = path.join(process.cwd(), "public", "docs", targetFilename);
-  const pdfDir = path.resolve(process.cwd(), "..", "IP-SAKTI-DATA", "Data", "pdf");
   const localPath = path.join(pdfDir, targetFilename);
 
   const filePath = fs.existsSync(publicPath) ? publicPath : localPath;
