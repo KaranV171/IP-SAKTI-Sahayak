@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+.env*.local
+
+# Binaries & Cloudflare Tunnel
+cloudflared.exe
+
+# Local data
+data/*
+!data/.gitkeep
+
+# Test / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Local database dumps & legacy chroma data
+*.sql
+*.sqlite3
+*.bin
+IP-SAKTI-DATA/
