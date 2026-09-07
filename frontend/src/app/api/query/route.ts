@@ -32,9 +32,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(fallbackResponse);
     }
 
-    // Connect to live FastAPI backend with timeout
+    // Connect to live FastAPI backend with fast timeout so dead tunnels fall back smoothly
     const controller = new AbortController();
-    const timeoutMs = 12000; // 12 seconds
+    const timeoutMs = 4000; // 4 seconds max
     const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
     try {

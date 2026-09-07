@@ -17,7 +17,7 @@ export async function GET() {
     }
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 3500);
+    const timeoutId = setTimeout(() => controller.abort(), 2000);
 
     const res = await fetch(`${BACKEND_URL}/health/database`, {
       cache: "no-store",
