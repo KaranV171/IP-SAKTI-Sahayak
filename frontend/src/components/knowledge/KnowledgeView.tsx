@@ -82,14 +82,14 @@ export const KnowledgeView: React.FC = () => {
       
       {/* Header */}
       <div className="text-center mb-10">
-        <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-800 border border-emerald-200 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-800 mb-3">
-          <BookOpen className="h-3.5 w-3.5" />
+        <div className="inline-flex items-center gap-2 rounded-full bg-[#edf2ea] px-3.5 py-1 text-xs font-semibold text-[#0d3826] border border-[#d5ded2] mb-3 shadow-2xs">
+          <BookOpen className="h-3.5 w-3.5 text-[#0d3826]" />
           <span>Statutory Grounding Corpus</span>
         </div>
-        <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white font-serif tracking-tight">
+        <h2 className="text-2xl sm:text-4xl font-bold text-[#0f1f17] font-serif tracking-tight">
           Verified Knowledge Base Registry
         </h2>
-        <p className="mt-2 text-sm text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+        <p className="mt-2 text-sm text-[#4b5563] max-w-2xl mx-auto leading-relaxed">
           The assistant indexes 35 statutory publications, official manuals, and regulatory gazettes across 5,842 vector-embedded chunks in PostgreSQL (pgvector).
         </p>
       </div>
@@ -97,33 +97,33 @@ export const KnowledgeView: React.FC = () => {
       {/* Categories */}
       <div className="space-y-8">
         {KNOWLEDGE_REGISTRY.map((cat, idx) => (
-          <div key={idx} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-2xs dark:border-slate-800 dark:bg-slate-900">
+          <div key={idx} className="rounded-2xl border border-[#e2e8df] bg-white p-6 sm:p-7 shadow-2xs">
             
-            <div className="flex items-center gap-2.5 mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">
-              <span className={`px-2.5 py-1 rounded-md text-xs font-bold border ${cat.badgeColor}`}>
+            <div className="flex items-center gap-2.5 mb-4 pb-3 border-b border-[#e2e8df]">
+              <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#edf2ea] text-[#0d3826] border border-[#d5ded2]">
                 {cat.category}
               </span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {cat.docs.map((doc, dIdx) => (
-                <div key={dIdx} className="rounded-xl border border-slate-100 bg-slate-50/70 p-4 dark:border-slate-800 dark:bg-slate-800/40">
+                <div key={dIdx} className="rounded-xl border border-[#e2e8df] bg-[#fafbf8] p-4 sm:p-5 hover:border-[#0d3826]/30 transition-colors shadow-2xs">
                   <div className="flex items-start justify-between gap-2 mb-2">
-                    <h4 className="text-sm font-semibold text-slate-900 dark:text-white font-serif leading-snug">
+                    <h4 className="text-sm font-semibold text-[#0f1f17] font-serif leading-snug">
                       {doc.title}
                     </h4>
-                    <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded bg-slate-200/80 text-slate-700 dark:bg-slate-700 dark:text-slate-300 shrink-0">
+                    <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded-md bg-[#edf2ea] text-[#0d3826] border border-[#d5ded2] shrink-0">
                       {doc.pages}
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-400 mb-2">
-                    <Landmark className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                  <div className="flex items-center gap-1.5 text-xs text-[#4b5563] mb-2">
+                    <Landmark className="h-3.5 w-3.5 text-[#0d3826] shrink-0" />
                     <span>{doc.authority}</span>
                   </div>
 
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed pt-2 border-t border-slate-200/60 dark:border-slate-700/60">
-                    <strong className="text-slate-700 dark:text-slate-300">Key Scope:</strong> {doc.coverage}
+                  <p className="text-[11px] text-[#6b7280] leading-relaxed pt-2 border-t border-[#e2e8df]">
+                    <strong className="text-[#0f1f17]">Key Scope:</strong> {doc.coverage}
                   </p>
                 </div>
               ))}

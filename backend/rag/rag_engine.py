@@ -31,21 +31,40 @@ class RAGEngine:
         # ---------------------------------------------------------
         # 2. RETRIEVAL
         # ---------------------------------------------------------
-        results = self.retriever.search(
-            query=query,
-            top_k=top_k,
-            categories=route["categories"] or None,
-            jurisdiction=route["jurisdiction"]
-        )
+        try:
+            results = self.retriever.search(
+                query=query,
+                top_k=top_k,
+                categories=route["categories"] or None,
+                jurisdiction=route["jurisdiction"]
+            )
+        except Exception as search_err:
+            print(f"[WARNING] Database retrieval failed or timed out: {search_err}")
+            results = []
 
         print("\nRetrieved chunks:", len(results))
 
         # ---------------------------------------------------------
-        # 3. THRESHOLD CHECK (AROUND 60% COSINE RELEVANCE)
+        # 3. BUILD SOURCE INFORMATION FOR ALL RETRIEVED CHUNKS
         # ---------------------------------------------------------
-        # User requirement: "make the rag threshold cosine relevance to around 60%
-        # and when the cosine rel is above 60 then it should use retrieved info and by using llm it should give our info"
-        COSINE_THRESHOLD = 0.58  # ~60% relevance threshold
+        sources = []
+        for index, result in enumerate(results[:top_k], start=1):
+            sources.append({
+                "source_number": index,
+                "source_title": result["source_title"],
+                "authority": result["authority"],
+                "page_number": result["page_number"],
+                "category": result["category"],
+                "jurisdiction": result["jurisdiction"],
+                "source_url": result["source_url"],
+                "similarity": round(result["similarity"], 4)
+            })
+
+        # ---------------------------------------------------------
+        # 4. THRESHOLD CHECK FOR GROUNDED LEGAL REASONING
+        # ---------------------------------------------------------
+        # BGE-M3 cosine similarity threshold for statutory grounding
+        COSINE_THRESHOLD = 0.48
 
         top_similarity = results[0]["similarity"] if results else 0.0
 
@@ -55,11 +74,11 @@ class RAGEngine:
                 "query": query,
                 "answer": (
                     f"The retrieved statutory documents have a cosine relevance match of {score_percent}%, "
-                    f"which is below the required 60% threshold for an authoritative legal determination.\n\n"
+                    f"which is below the threshold for an authoritative determination.\n\n"
                     "To generate a grounded statutory assessment, please provide more specific details about your inquiry "
                     "(such as exact medicinal plant species, formulation type, specific extraction solvent, or legal section)."
                 ),
-                "sources": [],
+                "sources": sources,
                 "confidence": "Low",
                 "disclaimer": (
                     "This information is for general guidance only and is not legal advice."
@@ -68,17 +87,16 @@ class RAGEngine:
             }
 
         # Filter chunks that meet the relevance threshold
-        filtered_results = [r for r in results if r["similarity"] >= 0.52]
+        filtered_results = [r for r in results if r["similarity"] >= 0.45]
         if not filtered_results:
             filtered_results = results[:3]
 
         # ---------------------------------------------------------
-        # 4. BUILD EVIDENCE CONTEXT
+        # 5. BUILD EVIDENCE CONTEXT
         # ---------------------------------------------------------
         context_parts = []
 
         for index, result in enumerate(filtered_results, start=1):
-
             source_info = (
                 f"[SOURCE {index}]\n"
                 f"Title: {result['source_title']}\n"
@@ -88,7 +106,7 @@ class RAGEngine:
                 f"Jurisdiction: {result['jurisdiction']}\n"
             )
 
-            content = result["content"][:1200]
+            content = result["content"][:900]
 
             context_parts.append(
                 source_info +
@@ -99,38 +117,18 @@ class RAGEngine:
         context = "\n\n".join(context_parts)
 
         # ---------------------------------------------------------
-        # 5. STRICT GROUNDED PROMPT
+        # 6. GROUNDED STEP-BY-STEP REASONING PROMPT
         # ---------------------------------------------------------
-        prompt = f"""
-You are IP-SAKTI Sahayak, a retrieval-augmented assistant for
-Intellectual Property and regulatory guidance related to Ayurveda.
+        prompt = f"""You are IP-SAKTI Sahayak, an authoritative research assistant for Intellectual Property and regulatory guidance in AYUSH and Ayurveda.
 
-Your task is to explain how the statutory rules, patent provisions, and guidelines
-in the RETRIEVED EVIDENCE apply to the user's question or proposed invention.
+Your task is to provide clear, structured, step-by-step statutory reasoning on how the RETRIEVED EVIDENCE applies to the USER QUESTION.
 
-STRICT GROUNDING RULES:
-
-1. Explain how the statutory standards, exclusions, and requirements from the RETRIEVED EVIDENCE apply to the user's inquiry.
-
-2. Do NOT add statutory sections, rules, dates, or legal requirements that are not present in the retrieved evidence.
-
-3. Every important statutory statement must cite the source number and page.
-   Example:
-   "The guidelines state that patentability of traditional herbal combinations depends on demonstrating synergistic efficacy beyond a mere mixture under Section 3(e). [Source 1, Page 19]"
-
-4. NEVER invent a source, page number, authority, quotation, or citation.
-
-5. Keep the explanation simple, clear, and structured in plain English so inventors can understand.
-
-6. Do not provide definitive legal advice.
-
-11. End the answer with:
-   "This information is for general guidance only and is not legal advice."
-
-IMPORTANT:
-The retrieved evidence may contain multiple sources or multiple chunks
-from the same document. Treat each SOURCE separately and cite the exact
-source/page that supports your statement.
+STRICT GROUNDING & REASONING RULES:
+1. Provide step-by-step reasoning explaining how the statutory provisions, guidelines, or requirements apply to the inquiry.
+2. For each key statutory statement or rule, cite the exact source number and page: e.g. [Source 1, Page 9].
+3. Structure your response with an Executive Summary followed by point-by-point statutory guidance with clear bold headings.
+4. Keep the explanation simple, clear, and grounded strictly in the provided evidence. Do not hallucinate sections or rules not in the evidence.
+5. End with: "This information is for general guidance only and is not legal advice."
 
 USER QUESTION:
 {query}
@@ -142,32 +140,28 @@ ANSWER:
 """
 
         # ---------------------------------------------------------
-        # 6. GENERATE ANSWER
+        # 7. GENERATE ANSWER
         # ---------------------------------------------------------
-        print("\nSending retrieved evidence to Qwen3:8B...")
+        print("\nSending retrieved evidence to Qwen3:8B for reasoning...")
 
         answer = generate_answer(prompt).strip()
 
         # ---------------------------------------------------------
-        # 7. CONFIDENCE
+        # 8. CONFIDENCE
         # ---------------------------------------------------------
         top_similarity = filtered_results[0]["similarity"]
 
-        if top_similarity >= 0.68:
+        if top_similarity >= 0.62:
             confidence = "High"
         elif top_similarity >= COSINE_THRESHOLD:
             confidence = "Medium"
         else:
             confidence = "Low"
 
-        # ---------------------------------------------------------
-        # 8. SOURCE INFORMATION
-        # ---------------------------------------------------------
-        sources = []
-
+        # Update sources list specifically matching filtered results
+        final_sources = []
         for index, result in enumerate(filtered_results, start=1):
-
-            sources.append({
+            final_sources.append({
                 "source_number": index,
                 "source_title": result["source_title"],
                 "authority": result["authority"],
@@ -185,7 +179,7 @@ ANSWER:
             "query": query,
             "answer": answer,
             "confidence": confidence,
-            "sources": sources,
+            "sources": final_sources,
             "route": route,
             "disclaimer": (
                 "This information is for general guidance only "

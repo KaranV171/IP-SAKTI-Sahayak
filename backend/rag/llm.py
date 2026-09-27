@@ -18,7 +18,7 @@ def generate_answer(prompt: str) -> str:
             "think": False,
             "options": {
                 "temperature": 0.2,
-                "num_predict": 200
+                "num_predict": 350
             }
         },
         timeout=TIMEOUT

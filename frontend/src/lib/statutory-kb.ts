@@ -8,6 +8,8 @@ interface PrecompiledKnowledge {
   confidence: "High" | "Medium";
   summary: string;
   points: { title: string; content: string }[];
+  summary_hi?: string;
+  points_hi?: { title: string; content: string }[];
   sources: {
     source_number: number;
     source_title: string;
@@ -22,12 +24,16 @@ interface PrecompiledKnowledge {
 const STATUTORY_KNOWLEDGE_BASE: PrecompiledKnowledge[] = [
   // Archetype 1: Ayurvedic Formulation Patentability
   {
-    keywords: ["ayurvedic", "patent", "formulation", "3(p)", "3(e)", "ayush", "traditional knowledge", "herb", "herbal"],
+    keywords: [
+      "ayurvedic", "patent", "formulation", "3(p)", "3(e)", "ayush", "traditional knowledge", "herb", "herbal",
+      "आयुर्वेद", "आयुर्वेदिक", "पेटेंट", "फॉर्मूला", "फॉर्मूलेशन", "दवा", "जड़ी-बूटी", "नुस्खा", "औषधि", "formula"
+    ],
     intent: "patentability_assessment",
     categories: ["Section 3(p) TK", "Section 3(e) Synergism", "AYUSH Guidelines 2025"],
     jurisdiction: "India",
     confidence: "High",
     summary: "Under Section 3(p) of the Patents Act, 1970, an invention which in effect is traditional knowledge or an aggregation or duplication of known properties of traditionally known components is strictly non-patentable. However, patent protection can be granted if the applicant demonstrates a novel, inventive extraction process or proves unexpected synergistic therapeutic efficacy [Source 01, Page 9].",
+    summary_hi: "पेटेंट अधिनियम, 1970 की धारा 3(p) के तहत, कोई भी आविष्कार जो पारंपरिक ज्ञान है या पारंपरिक रूप से ज्ञात घटकों के ज्ञात गुणों का एकत्रीकरण या दोहराव है, कड़ाई से गैर-पेटेंट योग्य है। हालांकि, यदि आवेदक एक नवीन, आविष्कारशील निष्कर्षण प्रक्रिया प्रदर्शित करता है या अप्रत्याशित सहक्रियात्मक चिकित्सीय प्रभावकारिता सिद्ध करता है तो पेटेंट सुरक्षा दी जा सकती है [Source 01, Page 9]।",
     points: [
       {
         title: "Statutory Bar under Section 3(p)",
@@ -44,6 +50,24 @@ const STATUTORY_KNOWLEDGE_BASE: PrecompiledKnowledge[] = [
       {
         title: "Mandatory Prior Approval under Biological Diversity Act",
         content: "Under Section 6 of the Biological Diversity Act, 2002, any applicant utilizing biological resources occurring in India must obtain prior approval from the National Biodiversity Authority (NBA, Form 1) before filing or obtaining patent grant [Source 02, Page 6]."
+      }
+    ],
+    points_hi: [
+      {
+        title: "धारा 3(p) के तहत वैधानिक निषेध",
+        content: "शास्त्रीय ग्रंथों (उदा. चरक संहिता, सुश्रुत संहिता, या भारत के आयुर्वेदिक फॉर्मूलरी) में पहले से वर्णित एक कच्चे हर्बल मिश्रण या फॉर्मूलेशन के लिए कोई भी दावा पेटेंट अधिनियम की धारा 3(p) के तहत गैर-पेटेंट योग्य है [Source 01, Page 9]।"
+      },
+      {
+        title: "धारा 3(e) के तहत सहक्रियात्मक प्रभावकारिता का अनिवार्य नियम",
+        content: "धारा 3(e) (केवल ज्ञात गुणों के एकत्रीकरण के परिणामस्वरूप मात्र मिश्रण) को दूर करने के लिए, आवेदक को तुलनात्मक प्रायोगिक डेटा प्रदान करना होगा जो यह प्रदर्शित करे कि संयुक्त फॉर्मूलेशन व्यक्तिगत सामग्रियों के योग से काफी अधिक अप्रत्याशित सहक्रियात्मक चिकित्सीय संवर्धन प्रदर्शित करता है [Source 01, Page 14]।"
+      },
+      {
+        title: "पेटेंट योग्य विषय-वस्तु: नवीन निष्कर्षण प्रक्रियाएं और बायोएक्टिव अंश",
+        content: "नवीन निष्कर्षण प्रक्रियाएं, मानकीकृत पृथक बायोएक्टिव अंश, या उन्नत दवा वितरण प्रणालियां (जैसे हर्बल नैनो-फॉर्मूलेशन) पेटेंट योग्य हैं, बशर्ते वे नवीनता (धारा 2(1)(j)) और आविष्कारशील कदम प्रदर्शित करें [Source 01, Page 22]।"
+      },
+      {
+        title: "जैविक विविधता अधिनियम के तहत अनिवार्य पूर्व स्वीकृति",
+        content: "जैविक विविधता अधिनियम, 2002 की धारा 6 के तहत, भारत में पाए जाने वाले जैविक संसाधनों का उपयोग करने वाले किसी भी आवेदक को पेटेंट आवेदन दाखिल करने या अनुदान प्राप्त करने से पहले राष्ट्रीय जैव विविधता प्राधिकरण (NBA, फॉर्म 1) से पूर्व स्वीकृति प्राप्त करनी होगी [Source 02, Page 6]।"
       }
     ],
     sources: [
@@ -309,7 +333,11 @@ const STATUTORY_KNOWLEDGE_BASE: PrecompiledKnowledge[] = [
 /**
  * Evaluates user query and returns grounded statutory guidance from the authentic corpus
  */
-export function getStatutoryGuidance(question: string, top_k: number = 3): QueryResponse {
+export function getStatutoryGuidance(
+  question: string,
+  top_k: number = 3,
+  language: string = "en"
+): QueryResponse {
   const queryLower = question.toLowerCase();
 
   // Score each archetype
@@ -319,7 +347,7 @@ export function getStatutoryGuidance(question: string, top_k: number = 3): Query
   for (const item of STATUTORY_KNOWLEDGE_BASE) {
     let score = 0;
     for (const kw of item.keywords) {
-      if (queryLower.includes(kw)) {
+      if (queryLower.includes(kw.toLowerCase())) {
         score += 2;
       }
     }
@@ -329,12 +357,24 @@ export function getStatutoryGuidance(question: string, top_k: number = 3): Query
     }
   }
 
-  // Format full synthesized answer
+  // Format full synthesized answer (English canonical)
   const pointsMarkdown = bestMatch.points
     .map((p, idx) => `### ${idx + 1}. ${p.title}\n${p.content}`)
     .join("\n\n");
 
   const fullAnswer = `${bestMatch.summary}\n\n${pointsMarkdown}\n\n### Follow-up Questions for Refined Assessment:\n- Classical Treatises: Is this combination or formulation documented in classical Ayurvedic treatises (e.g. Charaka Samhita, API) or TKDL?\n- Synergistic Efficacy (Section 3(e)): Do you have comparative experimental or clinical data demonstrating unexpected synergistic efficacy beyond a simple herbal admixture?\n- Process Innovation: Does the application claim novel extraction protocols, isolated bioactive fractions, or advanced delivery vehicles?\n- Regulatory Clearances: Have you submitted NBA Form 1 for biological material access or verified FSSAI Ayurveda Aahara Schedule A-IV standards?`;
+
+  // Multilingual synthesis if requested
+  const isMultilingual = language !== "en";
+  let translatedAnswer: string | undefined = undefined;
+
+  if (language === "hi" && bestMatch.summary_hi) {
+    const pointsHiMarkdown = (bestMatch.points_hi || bestMatch.points)
+      .map((p, idx) => `### ${idx + 1}. ${p.title}\n${p.content}`)
+      .join("\n\n");
+
+    translatedAnswer = `${bestMatch.summary_hi}\n\n${pointsHiMarkdown}\n\n### परिष्कृत मूल्यांकन हेतु अनुवर्ती प्रश्न:\n- शास्त्रीय ग्रंथ: क्या यह संयोजन या फॉर्मूलेशन शास्त्रीय आयुर्वेदिक ग्रंथों (जैसे चरक संहिता, API) या TKDL में प्रलेखित है?\n- सहक्रियात्मक प्रभावकारिता (धारा 3(e)): क्या आपके पास साधारण हर्बल मिश्रण से परे अप्रत्याशित सहक्रियात्मक प्रभावकारिता प्रदर्शित करने वाला तुलनात्मक प्रायोगिक या नैदानिक डेटा है?\n- प्रक्रिया नवाचार: क्या आवेदन में नवीन निष्कर्षण प्रोटोकॉल, मानकीकृत बायोएक्टिव अंश, या उन्नत वितरण वाहक का दावा किया गया है?\n- नियामक स्वीकृतियां: क्या आपने जैविक सामग्री तक पहुंच के लिए NBA फॉर्म 1 जमा किया है या FSSAI आयुर्वेद आहार अनुसूची A-IV मानकों का सत्यापन किया है?`;
+  }
 
   const sources: Source[] = bestMatch.sources.slice(0, top_k).map((s) => ({
     source_number: s.source_number,
@@ -351,7 +391,12 @@ export function getStatutoryGuidance(question: string, top_k: number = 3): Query
     question_id: Date.now(),
     answer_id: Date.now() + 1,
     query: question,
+    original_question: question,
+    input_language: language,
+    answer_language: language,
     answer: fullAnswer,
+    translated_answer: translatedAnswer,
+    translation_status: isMultilingual && translatedAnswer ? "success" : "bypassed",
     confidence: bestMatch.confidence,
     sources,
     route: {
@@ -360,6 +405,9 @@ export function getStatutoryGuidance(question: string, top_k: number = 3): Query
       jurisdiction: bestMatch.jurisdiction,
     },
     disclaimer:
-      "Statutory Guidance Notice: This assessment is synthesised from verified Indian patent acts, AYUSH examination guidelines (2025), and regulatory gazettes. This information is for regulatory analysis and research guidance only and does not constitute formal legal representation.",
+      language === "hi"
+        ? "विधिक एवं नियामक सूचना: यह मूल्यांकन भारतीय पेटेंट अधिनियमों, आयुष परीक्षा दिशानिर्देशों (2025) और विनियामक राजपत्रों से तैयार किया गया है। यह केवल शोध व विनियामक विश्लेषण हेतु है और औपचारिक कानूनी प्रतिनिधित्व नहीं है।"
+        : "Statutory Guidance Notice: This assessment is synthesised from verified Indian patent acts, AYUSH examination guidelines (2025), and regulatory gazettes. This information is for regulatory analysis and research guidance only and does not constitute formal legal representation.",
   };
 }
+

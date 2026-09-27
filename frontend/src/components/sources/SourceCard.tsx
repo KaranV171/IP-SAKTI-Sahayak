@@ -28,10 +28,10 @@ export const SourceCard: React.FC<SourceCardProps> = ({ source, isHighlighted })
     <div
       ref={cardRef}
       id={`source-card-${source.source_number}`}
-      className={`rounded-xl p-5 border transition-all duration-300 flex flex-col justify-between gap-3.5 ${
+      className={`rounded-2xl p-5 border transition-all duration-300 flex flex-col justify-between gap-3.5 ${
         isHighlighted
-          ? "border-[#68dba9] bg-[#1a243b] shadow-xl ring-2 ring-[#68dba9]/50 scale-[1.01]"
-          : "border-[#22304a] bg-[#171b26] hover:border-[#3d4a42] hover:bg-[#1c1f2a] shadow-sm"
+          ? "border-[#0d3826] bg-[#f4f8f4] shadow-md ring-2 ring-[#0d3826]/20 scale-[1.01]"
+          : "border-[#e2e8df] bg-white hover:border-[#0d3826]/30 hover:bg-[#fafbf8] shadow-2xs"
       }`}
     >
       <div className="flex flex-col gap-2.5">
@@ -39,53 +39,53 @@ export const SourceCard: React.FC<SourceCardProps> = ({ source, isHighlighted })
         {/* Top Header: Source ID, Page & Relevance Match */}
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-[#262a35] text-[#68dba9] border border-[#3d4a42]">
+            <span className="font-mono text-xs font-bold px-2.5 py-0.5 rounded-md bg-[#edf2ea] text-[#0d3826] border border-[#d5ded2]">
               SOURCE {formattedSourceNumber}
             </span>
-            <span className="font-mono text-[11px] px-2 py-0.5 rounded bg-[#262a35] text-[#dfe2f1]">
+            <span className="font-mono text-[11px] px-2 py-0.5 rounded-md bg-[#f4f6f1] text-[#4b5563] border border-[#e2e8df]">
               Page {source.page_number}
             </span>
           </div>
 
-          <span className="font-mono text-[11px] text-[#68dba9] bg-[#25a475]/15 px-2 py-0.5 rounded border border-[#25a475]/30 flex items-center gap-1">
+          <span className="font-mono text-[11px] text-[#065f46] bg-[#e6f4ea] px-2.5 py-0.5 rounded-full border border-[#bbf7d0] flex items-center gap-1 font-semibold">
             <span className="material-symbols-outlined text-[0.85rem]">verified</span>
             <span>Statutory Citation</span>
           </span>
         </div>
 
         {/* Source Title */}
-        <h4 className="font-serif text-sm sm:text-base font-semibold text-[#dfe2f1] leading-snug">
+        <h4 className="font-serif text-sm sm:text-base font-semibold text-[#0f1f17] leading-snug">
           {source.source_title}
         </h4>
 
         {/* Authority & Category metadata */}
-        <div className="flex flex-col gap-1.5 text-xs text-[#bccac0]">
+        <div className="flex flex-col gap-1.5 text-xs text-[#4b5563]">
           <div className="flex items-center gap-1.5">
-            <span className="material-symbols-outlined text-[1rem] text-[#6bd8cb] shrink-0">
+            <span className="material-symbols-outlined text-[1rem] text-[#0d3826] shrink-0">
               account_balance
             </span>
-            <span className="font-sans">Authority: <strong className="text-[#dfe2f1]">{source.authority || "Government of India"}</strong></span>
+            <span className="font-sans">Authority: <strong className="text-[#0f1f17]">{source.authority || "Government of India"}</strong></span>
           </div>
 
           <div className="flex items-center gap-1.5">
-            <span className="material-symbols-outlined text-[1rem] text-[#ffb77d] shrink-0">
+            <span className="material-symbols-outlined text-[1rem] text-[#d97706] shrink-0">
               tag
             </span>
-            <span className="font-mono text-[11px]">Domain: <span className="text-[#68dba9]">{source.category}</span> · {source.jurisdiction}</span>
+            <span className="font-mono text-[11px]">Domain: <span className="text-[#0d3826] font-semibold">{source.category}</span> · {source.jurisdiction}</span>
           </div>
         </div>
 
       </div>
 
       {/* Footer: REAL Clickable Source Gazette Link */}
-      <div className="pt-3 border-t border-[#22304a] flex items-center justify-between">
-        <span className="font-mono text-[10px] text-[#bccac0]/70">Official Gazette</span>
+      <div className="pt-3 border-t border-[#e2e8df] flex items-center justify-between">
+        <span className="font-mono text-[10px] text-[#6b7280]">Official Gazette</span>
         
         <a
           href={officialUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#25a475]/20 hover:bg-[#25a475]/30 text-[#85f8c4] hover:text-white rounded border border-[#25a475]/40 text-xs font-semibold transition-all cursor-pointer shadow-xs"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#0d3826] hover:bg-[#154a34] text-white rounded-lg text-xs font-semibold transition-all cursor-pointer shadow-xs"
           title="Open official statutory document in new tab"
         >
           <span>View Official Source</span>

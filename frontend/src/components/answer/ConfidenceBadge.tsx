@@ -36,28 +36,28 @@ export const ConfidenceBadge: React.FC<ConfidenceBadgeProps> = ({ confidence, si
 
   const badgeTheme = isHigh
     ? {
-        bg: "bg-[#25a475]/15",
-        border: "border-[#25a475]/40",
-        text: "text-[#85f8c4]",
-        bar: "bg-[#25a475]",
-        glow: "bg-[#68dba9]",
+        bg: "bg-[#edf2ea]",
+        border: "border-[#b8dfc4]",
+        text: "text-[#0d3826]",
+        bar: "bg-[#0d3826]",
+        glow: "bg-[#10b981]",
         icon: "verified",
         label: "High Confidence",
       }
     : isMedium
     ? {
-        bg: "bg-[#d97707]/15",
-        border: "border-[#d97707]/40",
-        text: "text-[#ffdcc3]",
-        bar: "bg-[#d97707]",
-        glow: "bg-[#ffb77d]",
+        bg: "bg-[#fef3c7]/70",
+        border: "border-[#fde68a]",
+        text: "text-[#92400e]",
+        bar: "bg-[#d97706]",
+        glow: "bg-[#f59e0b]",
         icon: "help",
         label: "Medium Confidence",
       }
     : {
-        bg: "bg-[#dc2626]/15",
-        border: "border-[#dc2626]/40",
-        text: "text-[#fca5a5]",
+        bg: "bg-[#fee2e2]/70",
+        border: "border-[#fecaca]",
+        text: "text-[#991b1b]",
         bar: "bg-[#dc2626]",
         glow: "bg-[#ef4444]",
         icon: "warning",
@@ -69,7 +69,7 @@ export const ConfidenceBadge: React.FC<ConfidenceBadgeProps> = ({ confidence, si
       <div
         onMouseEnter={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}
-        className={`px-3 py-2 rounded-lg flex flex-col gap-1.5 cursor-help border transition-all ${badgeTheme.bg} ${badgeTheme.border}`}
+        className={`px-3.5 py-2.5 rounded-xl flex flex-col gap-1.5 cursor-help border transition-all ${badgeTheme.bg} ${badgeTheme.border}`}
       >
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-1.5 min-w-0">
@@ -83,19 +83,19 @@ export const ConfidenceBadge: React.FC<ConfidenceBadgeProps> = ({ confidence, si
             <span className={`font-mono text-sm font-extrabold ${badgeTheme.text}`}>
               {scoreOutOf100}
             </span>
-            <span className="font-mono text-[10px] text-[#bccac0]/80">/100</span>
+            <span className="font-mono text-[10px] text-[#6b7280]">/100</span>
           </div>
         </div>
 
         {/* Visual Progress / Confidence Meter */}
-        <div className="w-full bg-[#1c1f2a] rounded-full h-1.5 overflow-hidden border border-[#22304a]">
+        <div className="w-full bg-[#e2e8df] rounded-full h-1.5 overflow-hidden">
           <div
             className={`h-full rounded-full transition-all duration-700 ease-out ${badgeTheme.bar}`}
             style={{ width: `${scoreOutOf100}%` }}
           />
         </div>
 
-        <div className="flex items-center justify-between text-[10px] text-[#bccac0]/80 font-mono">
+        <div className="flex items-center justify-between text-[10px] text-[#6b7280] font-mono">
           <span>Match: {scoreOutOf100}%</span>
           <span className="flex items-center gap-1">
             <span className="material-symbols-outlined text-[0.85rem]">{badgeTheme.icon}</span>
@@ -105,9 +105,9 @@ export const ConfidenceBadge: React.FC<ConfidenceBadgeProps> = ({ confidence, si
       </div>
 
       {showTooltip && (
-        <div className="absolute right-0 bottom-full mb-2 w-80 p-3.5 bg-[#0a0e18] text-[#dfe2f1] rounded-lg shadow-2xl text-xs z-40 border border-[#22304a] animate-in fade-in duration-150">
-          <div className="font-semibold mb-1.5 text-[#dfe2f1] flex items-center justify-between font-serif">
-            <span className="flex items-center gap-1.5 text-[#68dba9]">
+        <div className="absolute right-0 bottom-full mb-2 w-80 p-3.5 bg-[#0e1d17] text-white rounded-xl shadow-2xl text-xs z-40 border border-[#1f3b2e] animate-in fade-in duration-150">
+          <div className="font-semibold mb-1.5 text-white flex items-center justify-between font-serif">
+            <span className="flex items-center gap-1.5 text-[#10b981]">
               <span className="material-symbols-outlined text-[1rem]">analytics</span>
               <span>Evidence Confidence Rating</span>
             </span>
@@ -115,14 +115,14 @@ export const ConfidenceBadge: React.FC<ConfidenceBadgeProps> = ({ confidence, si
               {scoreOutOf100} / 100
             </span>
           </div>
-          <p className="text-[#bccac0] leading-relaxed text-[11px]">
+          <p className="text-[#a3b8af] leading-relaxed text-[11px]">
             {isHigh
               ? "Strong statutory backing: The retrieved sections from the Indian Patent Office & AYUSH guidelines directly answer this inquiry."
               : isMedium
               ? "Moderate statutory backing: Related provisions were found, but specific judicial precedents or full formulation details may require deeper manual review."
               : "Limited statutory backing: Few direct statutory sections matched this query. Further clarification or formal patent office consultation is advised."}
           </p>
-          <div className="mt-2.5 pt-2 border-t border-[#22304a] text-[10px] text-[#bccac0]/60 font-mono flex items-center justify-between">
+          <div className="mt-2.5 pt-2 border-t border-[#1f3b2e] text-[10px] text-[#6b7280] font-mono flex items-center justify-between">
             <span>Cosine Relevance: {(similarityScore ? (similarityScore * 100).toFixed(1) : scoreOutOf100)}%</span>
             <span>Indexed Chunks: 5,842</span>
           </div>

@@ -16,16 +16,16 @@ export const SourcesList: React.FC<SourcesListProps> = ({
   return (
     <div className="w-full flex flex-col gap-4">
       {/* Section Header */}
-      <div className="flex items-center justify-between pb-2 border-b border-[#22304a]">
+      <div className="flex items-center justify-between pb-2 border-b border-[#e2e8df]">
         <div className="flex items-center gap-2">
-          <span className="material-symbols-outlined text-[#68dba9] text-[1.25rem]">
+          <span className="material-symbols-outlined text-[#0d3826] text-[1.25rem]">
             library_books
           </span>
           <div>
-            <h3 className="font-serif text-base font-semibold text-[#dfe2f1]">
+            <h3 className="font-serif text-base font-semibold text-[#0f1f17]">
               Authoritative Sources &amp; Evidence
             </h3>
-            <p className="font-sans text-xs text-[#bccac0]">
+            <p className="font-sans text-xs text-[#6b7280]">
               {sources.length} primary statutory publications matched by BGE-M3
             </p>
           </div>
